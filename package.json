@@ -6,7 +6,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc -p .",
-    "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "lint": "eslint src/**/*.{ts,tsx} --fix",
     "prepare": "husky",
     "format": "prettier --write 'src/**/*.{ts,tsx,json,md,css,yml}'",
     "lint-staged": "lint-staged"
@@ -30,9 +30,12 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.1",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
@@ -45,8 +48,8 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "pnpm run lint",
-      "pnpm run format",
+      "pnpm lint",
+      "pnpm format",
       "git add ."
     ],
     "*.{json,md}": [
