@@ -1,16 +1,17 @@
 import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
+import { config } from 'dotenv';
+import express, { json } from 'express';
 
-dotenv.config();
+config();
 
 const app = express();
 app.use(cors());
 
-app.use(express.json());
+app.use(json());
 
 app.get('/', (req, res) => {
     const a = 1;
+
     const b = 2;
 
     res.send('Hello');

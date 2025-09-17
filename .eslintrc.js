@@ -8,14 +8,14 @@ module.exports = {
       "plugin:@typescript-eslint/recommended",
       "plugin:import/recommended",
       "plugin:import/typescript",
-      "prettier"
+      "prettier",
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
       ecmaVersion: "latest",
       sourceType: "module"
     },
-    plugins: ["@typescript-eslint", "import"],
+    plugins: ["@typescript-eslint", "import", "prettier"],
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],

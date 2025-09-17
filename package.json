@@ -1,60 +1,62 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
-    "build": "tsc -p .",
-    "lint": "eslint src/**/*.{ts,tsx} --fix",
-    "prepare": "husky",
-    "format": "prettier --write 'src/**/*.{ts,tsx,json,md,css,yml}'",
-    "lint-staged": "lint-staged"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.28.3",
-    "@babel/core": "^7.28.4",
-    "@babel/node": "^7.28.0",
-    "@babel/preset-env": "^7.28.3",
-    "@babel/runtime": "^7.28.4",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.5.1",
-    "@typescript-eslint/eslint-plugin": "^8.44.0",
-    "@typescript-eslint/parser": "^8.44.0",
-    "eslint": "^8.57.1",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.4",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.6",
-    "nodemon": "^3.1.10",
-    "pnpm": "^10.16.1",
-    "prettier": "^3.6.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
-  },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "pnpm lint",
-      "pnpm format",
-      "git add ."
-    ],
-    "*.{json,md}": [
-      "pnpm format",
-      "git add"
-    ]
-  }
+    "name": "backend",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "start": "node dist/index.js",
+        "dev": "nodemon src/index.ts",
+        "build": "tsc -p .",
+        "lint": "eslint src/**/*.{ts,tsx} --fix",
+        "prepare": "husky",
+        "format": "prettier --write 'src/**/*.{ts,tsx,json,md,css,yml}'",
+        "lint-staged": "lint-staged"
+    },
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.2",
+        "express": "^5.1.0",
+        "reflect-metadata": "^0.2.2",
+        "typeorm": "^0.3.26"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.28.3",
+        "@babel/core": "^7.28.4",
+        "@babel/node": "^7.28.0",
+        "@babel/preset-env": "^7.28.3",
+        "@babel/runtime": "^7.28.4",
+        "@commitlint/cli": "^19.8.1",
+        "@commitlint/config-conventional": "^19.8.1",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.5.1",
+        "@typescript-eslint/eslint-plugin": "^8.44.0",
+        "@typescript-eslint/parser": "^8.44.0",
+        "eslint": "^8.57.1",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-import-resolver-typescript": "^4.4.4",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-prettier": "^5.5.4",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.1.6",
+        "nodemon": "^3.1.10",
+        "pnpm": "^10.16.1",
+        "prettier": "^3.6.2",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.9.2"
+    },
+    "lint-staged": {
+        "src/**/*.ts": [
+            "pnpm lint",
+            "pnpm format",
+            "git add ."
+        ],
+        "*.{json,md}": [
+            "pnpm format",
+            "git add"
+        ]
+    }
 }
