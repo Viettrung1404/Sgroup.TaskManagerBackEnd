@@ -55,8 +55,7 @@
             "git add ."
         ],
         "*.{json,md}": [
-            "pnpm format",
-            "git add"
+            "pnpm format"
         ]
     }
 }
