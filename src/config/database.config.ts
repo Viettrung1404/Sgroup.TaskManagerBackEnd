@@ -1,19 +1,23 @@
 import 'reflect-metadata';
+
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
+
+import { RefreshToken } from '@/common/entities/refresh-token.entity';
+
 import { Board } from '../common/entities/board.entity';
-import { CardMembers } from '../common/entities/card-members.entity';
 import { Card } from '../common/entities/card.entity';
+import { CardMembers } from '../common/entities/card-members.entity';
 import { Comment } from '../common/entities/comment.entity';
 import { List } from '../common/entities/list.entity';
 import { Notification } from '../common/entities/notification.entity';
-import { ProjectMembers } from '../common/entities/project-members.entity';
-import { Project } from '../common/entities/project.entity';
 import { User } from '../common/entities/user.entity';
+import { Workspace } from '../common/entities/workspace.entity';
+import { WorkspaceMembers } from '../common/entities/workspace-members.entity';
 
 config();
 
-export const AppDataSource = new DataSource({
+export default new DataSource({
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT) || 5432,
@@ -24,14 +28,15 @@ export const AppDataSource = new DataSource({
     logging: false,
     entities: [
         User,
-        Project,
-        ProjectMembers,
+        Workspace,
+        WorkspaceMembers,
         Board,
         List,
         Card,
         CardMembers,
         Comment,
         Notification,
+        RefreshToken,
     ],
     migrations: ['src/migration/**/*.ts'],
     subscribers: [],

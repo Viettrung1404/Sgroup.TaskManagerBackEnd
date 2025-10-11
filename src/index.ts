@@ -1,37 +1,21 @@
-import cors from 'cors';
-import { config } from 'dotenv';
-import express, { json } from 'express';
-import routers from './apis';
-import { AppDataSource } from './config/database.config';
-import { setupSwagger } from './config/swagger.config';
+import 'reflect-metadata';
 
-config();
+import { env } from '@/common/utils/envConfig';
+import { app, logger } from '@/server';
 
-const app = express();
+const server = app.listen(env.PORT, () => {
+    const { NODE_ENV, HOST, PORT } = env;
+    logger.info(`Server (${NODE_ENV}) running on port http://${HOST}:${PORT}`);
+});
 
-AppDataSource.initialize()
-    .then(() => {
-        console.log('✅ Database connected');
-        app.use(cors());
-        app.use(json());
-        setupSwagger(app);
-        app.use('/apis', routers);
+const onCloseSignal = () => {
+    logger.info('sigint received, shutting down');
+    server.close(() => {
+        logger.info('server closed');
+        process.exit();
+    });
+    setTimeout(() => process.exit(1), 10000).unref(); // Force shutdown after 10s
+};
 
-        app.get('/', (req, res) => {
-            const a = 1;
-            const b = 2;
-            console.log(a + b);
-
-            res.send('Hello');
-        });
-
-        app.listen(process.env.PORT, () => {
-            console.log(
-                `Server is running on port http://localhost:${process.env.PORT}`
-            );
-            console.log(
-                `Swagger docs at http://localhost:${process.env.PORT}/api-docs`
-            );
-        });
-    })
-    .catch((error) => console.log('❌ DB connection error:', error));
+process.on('SIGINT', onCloseSignal);
+process.on('SIGTERM', onCloseSignal);

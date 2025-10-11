@@ -4,7 +4,7 @@ import { DateTimeEntity } from './base/dateTimeEntity';
 import { CardMembers } from './card-members.entity';
 import { Comment } from './comment.entity';
 import { Notification } from './notification.entity';
-import { ProjectMembers } from './project-members.entity';
+import { WorkspaceMembers } from './workspace-members.entity';
 
 @Entity('users')
 export class User extends DateTimeEntity {
@@ -29,8 +29,14 @@ export class User extends DateTimeEntity {
     @Column({ type: 'bool', nullable: false, default: false })
     public isActive: boolean;
 
-    @OneToMany(() => ProjectMembers, (projectMember) => projectMember.project)
-    public projectMembers: ProjectMembers[];
+    @Column({ nullable: true })
+    public googleId: string;
+
+    @OneToMany(
+        () => WorkspaceMembers,
+        (workspaceMember) => workspaceMember.workspace
+    )
+    public workspaceMembers: WorkspaceMembers[];
 
     @OneToMany(() => CardMembers, (cardMember) => cardMember.user)
     public cardMembers: CardMembers[];
