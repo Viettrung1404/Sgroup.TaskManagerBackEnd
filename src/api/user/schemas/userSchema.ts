@@ -23,6 +23,8 @@ export const UserSchema = z.object({
     notifications: z.array(commonValidations.id).optional(),
     createdAt: z.date(),
     updatedAt: z.date(),
+    roles: z.array(z.string()).optional(),
+    permissions: z.array(z.string()).optional(),
 });
 
 export const UpdateProfileSchema = z.object({

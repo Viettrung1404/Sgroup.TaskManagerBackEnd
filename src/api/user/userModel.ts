@@ -14,6 +14,8 @@ export const UserSchema = z.object({
     googleId: z.string().optional(),
     createdAt: z.date(),
     updatedAt: z.date(),
+    roles: z.array(z.string()).optional(),
+    permissions: z.array(z.string()).optional(),
 });
 
 // Schema for creating a new user (excludes auto-generated fields)
@@ -24,6 +26,8 @@ export const CreateUserSchema = z.object({
     bio: z.string().optional(),
     avatarUrl: z.string().optional(),
     googleId: z.string().optional(),
+    roles: z.array(z.string()).optional(),
+    permissions: z.array(z.string()).optional(),
 });
 
 export type CreateUserType = z.infer<typeof CreateUserSchema>;

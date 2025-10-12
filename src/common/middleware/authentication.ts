@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
+import AuthenticatedRequest from '@/common/declare/authenticationRequest.declare';
 import { verifyJwt } from '@/common/utils/jwtUtils';
 
-export interface AuthenticatedRequest extends Request {
-    user: { userId: string; [key: string]: any };
-}
+// export interface AuthenticatedRequest extends Request {
+//     user: { userId: string; [key: string]: any };
+// }
 
 // Thay đổi kiểu tham số req từ AuthenticatedRequest thành Request
 const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
@@ -29,6 +30,11 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
             userId: string;
             [key: string]: any;
         };
+        // In ra thông tin user
+        console.log(
+            '\n🚀 ~ authenticateJWT ~ user:',
+            (req as AuthenticatedRequest).user
+        );
         next();
     } catch (error) {
         console.error('JWT verification failed:', error);

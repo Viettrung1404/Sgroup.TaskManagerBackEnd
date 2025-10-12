@@ -3,17 +3,20 @@ import 'reflect-metadata';
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 
+import { Board } from '@/common/entities/board.entity';
+import { Card } from '@/common/entities/card.entity';
+import { CardMembers } from '@/common/entities/card-members.entity';
+import { Comment } from '@/common/entities/comment.entity';
+import { List } from '@/common/entities/list.entity';
+import { Notification } from '@/common/entities/notification.entity';
+import { Permission } from '@/common/entities/permission.entity';
 import { RefreshToken } from '@/common/entities/refresh-token.entity';
-
-import { Board } from '../common/entities/board.entity';
-import { Card } from '../common/entities/card.entity';
-import { CardMembers } from '../common/entities/card-members.entity';
-import { Comment } from '../common/entities/comment.entity';
-import { List } from '../common/entities/list.entity';
-import { Notification } from '../common/entities/notification.entity';
-import { User } from '../common/entities/user.entity';
-import { Workspace } from '../common/entities/workspace.entity';
-import { WorkspaceMembers } from '../common/entities/workspace-members.entity';
+import { Role } from '@/common/entities/role.entity';
+import { RolePermission } from '@/common/entities/role-permission.entity';
+import { User } from '@/common/entities/user.entity';
+import { UserRole } from '@/common/entities/user-role.entity';
+import { Workspace } from '@/common/entities/workspace.entity';
+import { WorkspaceMembers } from '@/common/entities/workspace-member.entity';
 
 config();
 
@@ -37,6 +40,10 @@ export default new DataSource({
         Comment,
         Notification,
         RefreshToken,
+        Role,
+        UserRole,
+        RolePermission,
+        Permission,
     ],
     migrations: ['src/migration/**/*.ts'],
     subscribers: [],

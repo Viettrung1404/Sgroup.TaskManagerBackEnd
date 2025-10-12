@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { DateTimeEntity } from './base/dateTimeEntity';
 import { Board } from './board.entity';
-import { WorkspaceMembers } from './workspace-members.entity';
+import { WorkspaceMembers } from './workspace-member.entity';
 
 @Entity('workspaces')
 export class Workspace extends DateTimeEntity {

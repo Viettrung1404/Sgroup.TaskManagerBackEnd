@@ -9,7 +9,9 @@
         "lint": "eslint src/**/*.{ts,tsx} --fix",
         "prepare": "husky",
         "format": "prettier --write 'src/**/*.{ts,tsx,json,md,css,yml}'",
-        "lint-staged": "lint-staged"
+        "lint-staged": "lint-staged",
+        "seed:rbac": "ts-node -r tsconfig-paths/register scripts/seed-authorization.ts",
+        "seed:rbac:clean": "ts-node -r tsconfig-paths/register scripts/seed-authorization.ts --clean"
     },
     "author": "",
     "license": "ISC",
