@@ -247,6 +247,19 @@ class WorkspaceService {
         data: CreateWorkspaceMemberType
     ): Promise<ServiceResponse<WorkspaceMemberType | null>> {
         try {
+            const existingMember =
+                await this.workspaceMemberRepository.findMember(
+                    workspaceId,
+                    data.userId
+                );
+            if (existingMember) {
+                return new ServiceResponse(
+                    ResponseStatus.Failed,
+                    'Member already exists',
+                    null,
+                    StatusCodes.BAD_REQUEST
+                );
+            }
             const newMember = await this.workspaceMemberRepository.addMember(
                 workspaceId,
                 data
@@ -260,7 +273,7 @@ class WorkspaceService {
                 );
             }
             const inviteLink = `${process.env.FRONTEND_URL}/w/${workspaceId}`;
-            sendEmail(MailTrigger.VerifyEmail, {
+            sendEmail(MailTrigger.InviteMember, {
                 email: newMember.user.email,
                 inviteLink,
             });

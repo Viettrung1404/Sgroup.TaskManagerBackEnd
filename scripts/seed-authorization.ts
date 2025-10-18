@@ -265,6 +265,26 @@ export class AuthorizationSeeder {
                         .map((p) => p.name),
                 },
                 {
+                    name: 'workspace_member',
+                    description:
+                        'Workspace Member - Standard access within workspace',
+                    permissions: permissionsData
+                        .filter(
+                            (p) =>
+                                p.name.includes('workspaces:') ||
+                                p.name.includes('boards:')
+                        )
+                        .map((p) => p.name),
+                },
+                {
+                    name: 'workspace_observer',
+                    description:
+                        'Workspace Observer - View only access within workspace, can only read boards which they are a member of',
+                    permissions: permissionsData
+                        .filter((p) => p.name.includes('workspaces:read'))
+                        .map((p) => p.name),
+                },
+                {
                     name: 'board_owner',
                     description: 'Board Owner - Full access to owned boards',
                     permissions: permissionsData
