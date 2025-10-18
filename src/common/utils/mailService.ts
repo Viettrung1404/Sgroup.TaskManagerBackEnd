@@ -4,7 +4,11 @@ import nodemailer from 'nodemailer';
 import { logger } from '@/server';
 
 import { MailTrigger } from '../enums/enumBase';
-import { VerifyEmailTemplate } from './mailTemplate';
+import {
+    InviteMemberTemplate,
+    ResetPasswordTemplate,
+    VerifyEmailTemplate,
+} from './mailTemplate';
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -25,6 +29,16 @@ export const sendEmail = async (trigger: MailTrigger, context: any) => {
             case MailTrigger.VerifyEmail:
                 mailTemplate = VerifyEmailTemplate;
                 break;
+
+            case MailTrigger.ResetPassword:
+                mailTemplate = ResetPasswordTemplate;
+                break;
+
+            case MailTrigger.InviteMember:
+                // You can add an InviteMemberTemplate similar to the others
+                mailTemplate = InviteMemberTemplate;
+                break;
+
             default:
                 logger.info(`Mail template not found for trigger: ${trigger}`);
                 return;

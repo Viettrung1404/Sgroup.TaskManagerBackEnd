@@ -1,22 +1,22 @@
 import { Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 import { DateTimeEntity } from './base/dateTimeEntity';
+import { Board } from './board.entity';
 import { Role } from './role.entity';
 import { User } from './user.entity';
-import { Workspace } from './workspace.entity';
 
-@Unique(['user', 'workspace'])
-@Entity('workspace_members')
-export class WorkspaceMembers extends DateTimeEntity {
+@Unique(['user', 'board'])
+@Entity('board_members')
+export class BoardMembers extends DateTimeEntity {
     @PrimaryGeneratedColumn('uuid')
     public id: string;
 
     @ManyToOne(() => Role)
     public role: Role;
 
-    @ManyToOne(() => User, (user) => user.workspaceMembers)
+    @ManyToOne(() => User, (user) => user.boardMembers)
     public user: User;
 
-    @ManyToOne(() => Workspace, (workspace) => workspace.workspaceMembers)
-    public workspace: Workspace;
+    @ManyToOne(() => Board, (board) => board.boardMembers)
+    public board: Board;
 }

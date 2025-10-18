@@ -4,6 +4,7 @@ import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 
 import { Board } from '@/common/entities/board.entity';
+import { BoardMembers } from '@/common/entities/board-member.entity';
 import { Card } from '@/common/entities/card.entity';
 import { CardMembers } from '@/common/entities/card-members.entity';
 import { Comment } from '@/common/entities/comment.entity';
@@ -44,6 +45,7 @@ export default new DataSource({
         UserRole,
         RolePermission,
         Permission,
+        BoardMembers,
     ],
     migrations: ['src/migration/**/*.ts'],
     subscribers: [],

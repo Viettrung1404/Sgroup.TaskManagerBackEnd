@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { DateTimeEntity } from './base/dateTimeEntity';
+import { BoardMembers } from './board-member.entity';
 import { CardMembers } from './card-members.entity';
 import { Comment } from './comment.entity';
 import { Notification } from './notification.entity';
@@ -38,6 +39,9 @@ export class User extends DateTimeEntity {
         (workspaceMember) => workspaceMember.workspace
     )
     public workspaceMembers: WorkspaceMembers[];
+
+    @OneToMany(() => BoardMembers, (boardMember) => boardMember.user)
+    public boardMembers: BoardMembers[];
 
     @OneToMany(() => CardMembers, (cardMember) => cardMember.user)
     public cardMembers: CardMembers[];

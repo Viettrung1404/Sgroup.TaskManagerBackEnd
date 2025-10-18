@@ -21,7 +21,7 @@ export class AuthorizationSeeder {
             const rolePermissionRepository =
                 AppDataSource.getRepository(RolePermission);
             const userRepository = AppDataSource.getRepository(User);
-            const userRoleRepository = AppDataSource.getRepository(UserRole);
+            // const userRoleRepository = AppDataSource.getRepository(UserRole);
 
             // Define permissions for Trello-like app
             const permissionsData = [
@@ -528,25 +528,25 @@ export class AuthorizationSeeder {
                 if (!role) continue;
 
                 // Check if user-role already exists
-                const exists = await userRoleRepository.findOne({
-                    where: { userId: user.id, roleId: role.id },
-                });
+                // const exists = await userRoleRepository.findOne({
+                //     where: { userId: user.id, roleId: role.id },
+                // });
 
-                if (!exists) {
-                    await userRoleRepository.save(
-                        userRoleRepository.create({
-                            userId: user.id,
-                            roleId: role.id,
-                        })
-                    );
-                    console.log(
-                        `✅ Linked user ${userData.email} to role: ${userData.roleName}`
-                    );
-                } else {
-                    console.log(
-                        `⏭️  User ${userData.email} already linked to role: ${userData.roleName}`
-                    );
-                }
+                // if (!exists) {
+                //     await userRoleRepository.save(
+                //         userRoleRepository.create({
+                //             userId: user.id,
+                //             roleId: role.id,
+                //         })
+                //     );
+                //     console.log(
+                //         `✅ Linked user ${userData.email} to role: ${userData.roleName}`
+                //     );
+                // } else {
+                //     console.log(
+                //         `⏭️  User ${userData.email} already linked to role: ${userData.roleName}`
+                //     );
+                // }
             }
 
             console.log('🎉 RBAC seeding completed successfully!');
@@ -566,19 +566,20 @@ export class AuthorizationSeeder {
             console.log('🧹 Cleaning up RBAC data...');
 
             // Delete in correct order to respect foreign keys
-            await AppDataSource.getRepository(UserRole).delete({});
+            // Sử dụng .clear() thay vì .delete({})
+            await AppDataSource.getRepository(UserRole).clear();
             console.log('🗑️  Removed all user-role associations');
 
-            await AppDataSource.getRepository(RolePermission).delete({});
+            await AppDataSource.getRepository(RolePermission).clear();
             console.log('🗑️  Removed all role-permission associations');
 
-            await AppDataSource.getRepository(User).delete({});
+            await AppDataSource.getRepository(User).clear();
             console.log('🗑️  Removed all users');
 
-            await AppDataSource.getRepository(Role).delete({});
+            await AppDataSource.getRepository(Role).clear();
             console.log('🗑️  Removed all roles');
 
-            await AppDataSource.getRepository(Permission).delete({});
+            await AppDataSource.getRepository(Permission).clear();
             console.log('🗑️  Removed all permissions');
 
             console.log('✅ RBAC cleanup completed');

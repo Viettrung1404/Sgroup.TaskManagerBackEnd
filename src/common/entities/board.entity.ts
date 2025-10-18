@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { DateTimeEntity } from './base/dateTimeEntity';
+import { BoardMembers } from './board-member.entity';
 import { List } from './list.entity';
 import { Workspace } from './workspace.entity';
 
@@ -52,4 +53,8 @@ export class Board extends DateTimeEntity {
     // lists
     @OneToMany(() => List, (list) => list.board)
     lists: List[];
+
+    // boardMembers
+    @OneToMany(() => BoardMembers, (boardMember) => boardMember.board)
+    public boardMembers: BoardMembers[];
 }
