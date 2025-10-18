@@ -5,7 +5,6 @@ import { BoardMembers } from './board-member.entity';
 import { CardMembers } from './card-members.entity';
 import { Comment } from './comment.entity';
 import { Notification } from './notification.entity';
-import { UserRole } from './user-role.entity';
 import { WorkspaceMembers } from './workspace-member.entity';
 
 @Entity('users')
@@ -51,8 +50,4 @@ export class User extends DateTimeEntity {
 
     @OneToMany(() => Notification, (notification) => notification.user)
     public notifications: Notification[];
-
-    // user - role
-    @OneToMany(() => UserRole, (userRole) => userRole.user)
-    public userRoles: UserRole[];
 }

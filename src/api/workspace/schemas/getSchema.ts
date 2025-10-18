@@ -11,6 +11,7 @@ export const WorkspaceSchema = z.object({
     id: z.string(),
     title: z.string(),
     description: z.string().optional(),
+    visibility: z.enum(['private', 'public']).optional(),
     members: z.array(commonValidations.id).optional(),
     boards: z.array(commonValidations.id).optional(),
     createdAt: z.date(),

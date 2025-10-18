@@ -26,12 +26,13 @@ export class WorkspaceMemberRepository {
         });
     }
 
-    // danh sách workspace của user
-    async listWorkspaces(userId: string): Promise<WorkspaceMembers[]> {
-        return this.repo.find({
+    // danh sách workspace của user trả về workspace entity
+    async listWorkspaces(userId: string): Promise<Workspace[]> {
+        const memberships = await this.repo.find({
             where: { user: { id: userId } },
             relations: { user: true, workspace: true },
         });
+        return memberships.map((membership) => membership.workspace);
     }
 
     async addMember(
@@ -85,5 +86,22 @@ export class WorkspaceMemberRepository {
         if (!membership) return false;
         await this.repo.delete(membership.id);
         return true;
+    }
+
+    async findMember(
+        workspaceId: string,
+        memberId: string
+    ): Promise<WorkspaceMemberType | null> {
+        return this.repo.findOne({
+            where: { workspace: { id: workspaceId }, user: { id: memberId } },
+            relations: { role: true, user: true, workspace: true },
+        });
+    }
+
+    async findByAdminId(adminId: string): Promise<WorkspaceMembers[]> {
+        return this.repo.find({
+            where: { user: { id: adminId } },
+            relations: { role: true, user: true, workspace: true },
+        });
     }
 }

@@ -9,6 +9,7 @@ extendZodWithOpenApi(z);
 export const UpdateWorkspaceContentSchema = z.object({
     title: z.string().min(2).max(100).optional(),
     description: z.string().max(500).optional(),
+    visibility: z.enum(['private', 'public']).optional(),
 });
 
 // Dùng cho api docs workspaces

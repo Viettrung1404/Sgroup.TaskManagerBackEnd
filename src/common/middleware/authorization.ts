@@ -3,13 +3,221 @@ import { NextFunction, Request, Response } from 'express';
 import AuthenticatedRequest from '@/common/declare/authenticationRequest.declare';
 import { RbacProvider } from '@/common/providers/rbac.provider';
 
-// import AuthenticatedRequest from '../declare/authenticationRequest.declare';
-
-// chuẩn hóa danh sách (lowercase + trim)
+// Chuẩn hóa danh sách (lowercase + trim)
 function normalize(list?: string[]) {
     return (list ?? []).map((x) => x.toLowerCase().trim());
 }
 
+// Middleware kiểm tra permissions trong workspace
+export function requireWorkspacePermissions(
+    required: string[] | string,
+    options?: { any?: boolean }
+) {
+    const requiredList = normalize(
+        Array.isArray(required) ? required : [required]
+    );
+    const matchAny = options?.any === true;
+
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const authReq = req as AuthenticatedRequest;
+            if (!authReq.user)
+                return res.status(401).json({ message: 'Unauthorized' });
+
+            const userId = authReq.user.userId;
+            const workspaceId = req.params.id || req.body.id;
+
+            if (!workspaceId) {
+                return res
+                    .status(400)
+                    .json({ message: 'Workspace ID required' });
+            }
+
+            const permissions =
+                await RbacProvider.getUserPermissionsInWorkspace(
+                    userId,
+                    workspaceId
+                );
+
+            console.log('🚀 ~ Workspace Permissions:', permissions);
+
+            const userPerms = new Set(normalize(permissions));
+            const matches = requiredList.map((p) => userPerms.has(p));
+            const ok = matchAny
+                ? matches.some(Boolean)
+                : matches.every(Boolean);
+
+            if (!ok) {
+                return res.status(403).json({
+                    message: 'Forbidden: Insufficient workspace permissions',
+                    required: requiredList,
+                    userPermissions: Array.from(userPerms),
+                });
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+}
+
+// Middleware kiểm tra permissions trong board
+export function requireBoardPermissions(
+    required: string[] | string,
+    options?: { any?: boolean }
+) {
+    const requiredList = normalize(
+        Array.isArray(required) ? required : [required]
+    );
+    const matchAny = options?.any === true;
+
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const authReq = req as AuthenticatedRequest;
+            if (!authReq.user)
+                return res.status(401).json({ message: 'Unauthorized' });
+
+            const userId = authReq.user.userId;
+            const boardId = req.params.boardId || req.body.boardId;
+
+            if (!boardId) {
+                return res.status(400).json({ message: 'Board ID required' });
+            }
+
+            const permissions = await RbacProvider.getUserPermissionsInBoard(
+                userId,
+                boardId
+            );
+
+            console.log('🚀 ~ Board Permissions:', permissions);
+
+            const userPerms = new Set(normalize(permissions));
+            const matches = requiredList.map((p) => userPerms.has(p));
+            const ok = matchAny
+                ? matches.some(Boolean)
+                : matches.every(Boolean);
+
+            if (!ok) {
+                return res.status(403).json({
+                    message: 'Forbidden: Insufficient board permissions',
+                    required: requiredList,
+                    userPermissions: Array.from(userPerms),
+                });
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+}
+
+// Middleware kiểm tra permissions trong card
+export function requireCardPermissions(
+    required: string[] | string,
+    options?: { any?: boolean }
+) {
+    const requiredList = normalize(
+        Array.isArray(required) ? required : [required]
+    );
+    const matchAny = options?.any === true;
+
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const authReq = req as AuthenticatedRequest;
+            if (!authReq.user)
+                return res.status(401).json({ message: 'Unauthorized' });
+
+            const userId = authReq.user.userId;
+            const cardId = req.params.cardId || req.body.cardId;
+
+            if (!cardId) {
+                return res.status(400).json({ message: 'Card ID required' });
+            }
+
+            const permissions = await RbacProvider.getUserPermissionsInCard(
+                userId,
+                cardId
+            );
+
+            console.log('🚀 ~ Card Permissions:', permissions);
+
+            const userPerms = new Set(normalize(permissions));
+            const matches = requiredList.map((p) => userPerms.has(p));
+            const ok = matchAny
+                ? matches.some(Boolean)
+                : matches.every(Boolean);
+
+            if (!ok) {
+                return res.status(403).json({
+                    message: 'Forbidden: Insufficient card permissions',
+                    required: requiredList,
+                    userPermissions: Array.from(userPerms),
+                });
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+}
+
+// Middleware kiểm tra workspace roles
+export function requireWorkspaceRoles(
+    required: string[] | string,
+    options?: { any?: boolean }
+) {
+    const requiredList = normalize(
+        Array.isArray(required) ? required : [required]
+    );
+    const matchAny = options?.any === true;
+
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const authReq = req as AuthenticatedRequest;
+            if (!authReq.user)
+                return res.status(401).json({ message: 'Unauthorized' });
+
+            const userId = authReq.user.userId;
+            const workspaceId = req.params.workspaceId || req.body.workspaceId;
+
+            if (!workspaceId) {
+                return res
+                    .status(400)
+                    .json({ message: 'Workspace ID required' });
+            }
+
+            const roles = await RbacProvider.getUserRolesInWorkspace(
+                userId,
+                workspaceId
+            );
+
+            console.log('🚀 ~ Workspace Roles:', roles);
+
+            const userRoles = new Set(normalize(roles));
+            const matches = requiredList.map((r) => userRoles.has(r));
+            const ok = matchAny
+                ? matches.some(Boolean)
+                : matches.every(Boolean);
+
+            if (!ok) {
+                return res.status(403).json({
+                    message: 'Forbidden: Insufficient workspace role',
+                    required: requiredList,
+                    userRoles: Array.from(userRoles),
+                });
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
+}
+
+// Middleware load tất cả roles/permissions (cho general purpose)
 export async function preloadUserAuthz(
     req: Request,
     res: Response,
@@ -19,10 +227,11 @@ export async function preloadUserAuthz(
         const authReq = req as AuthenticatedRequest;
         if (!authReq.user)
             return res.status(401).json({ message: 'Unauthorized' });
-        const userId = authReq.user.id;
+
+        const userId = authReq.user.userId;
         if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
-        // Chỉ load nếu chưa có
+        // Load tất cả roles và permissions từ mọi context
         if (!authReq.user.roles || !authReq.user.permissions) {
             const { roles, permissions } =
                 await RbacProvider.attachUserAuthz(userId);
@@ -33,95 +242,4 @@ export async function preloadUserAuthz(
     } catch (err) {
         next(err);
     }
-}
-
-export function requirePermissions(
-    required: string[] | string,
-    options?: { any?: boolean; preload?: boolean }
-) {
-    const requiredList = normalize(
-        Array.isArray(required) ? required : [required]
-    );
-    const matchAny = options?.any === true;
-    const shouldPreload = options?.preload !== false; // mặc định preload
-
-    return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const authReq = req as AuthenticatedRequest;
-            if (!authReq.user)
-                return res.status(401).json({ message: 'Unauthorized' });
-            const userId = authReq.user.userId;
-            if (!userId)
-                return res.status(401).json({ message: 'Unauthorized' });
-
-            if (
-                shouldPreload &&
-                (!authReq.user.permissions || !authReq.user.roles)
-            ) {
-                const { roles, permissions } =
-                    await RbacProvider.attachUserAuthz(userId);
-                authReq.user.roles = roles;
-                authReq.user.permissions = permissions;
-            }
-            // in ra role và permission
-            console.log('🚀 ~ authReq.user.roles:', authReq.user.roles);
-            console.log(
-                '🚀 ~ authReq.user.permissions:',
-                authReq.user.permissions
-            );
-            const userPerms = new Set(normalize(authReq.user.permissions));
-            const matches = requiredList.map((p) => userPerms.has(p));
-            const ok = matchAny
-                ? matches.some(Boolean)
-                : matches.every(Boolean);
-            if (!ok) return res.status(403).json({ message: 'Forbidden' });
-
-            next();
-        } catch (err) {
-            next(err);
-        }
-    };
-}
-
-export function requireRoles(
-    required: string[] | string,
-    options?: { any?: boolean; preload?: boolean }
-) {
-    const requiredList = normalize(
-        Array.isArray(required) ? required : [required]
-    );
-    const matchAny = options?.any === true;
-    const shouldPreload = options?.preload !== false;
-
-    return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const authReq = req as AuthenticatedRequest;
-            if (!authReq.user)
-                return res.status(401).json({ message: 'Unauthorized' });
-            const userId = authReq.user.userId;
-            if (!userId)
-                return res.status(401).json({ message: 'Unauthorized' });
-
-            if (
-                shouldPreload &&
-                (!authReq.user.roles || !authReq.user.permissions)
-            ) {
-                const { roles, permissions } =
-                    await RbacProvider.attachUserAuthz(userId);
-                authReq.user.roles = roles;
-                authReq.user.permissions = permissions;
-            }
-
-            const userRoles = new Set(normalize(authReq.user.roles));
-            const matches = requiredList.map((r) => userRoles.has(r));
-            const ok = matchAny
-                ? matches.some(Boolean)
-                : matches.every(Boolean);
-            if (!ok) return res.status(403).json({ message: 'Forbidden' });
-
-            next();
-        } catch (err) {
-            next(err);
-        }
-    };
 }

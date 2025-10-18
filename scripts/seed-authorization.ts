@@ -6,7 +6,6 @@ import { Permission } from '@/common/entities/permission.entity';
 import { Role } from '@/common/entities/role.entity';
 import { RolePermission } from '@/common/entities/role-permission.entity';
 import { User } from '@/common/entities/user.entity';
-import { UserRole } from '@/common/entities/user-role.entity';
 import AppDataSource from '@/config/database.config';
 
 export class AuthorizationSeeder {
@@ -567,8 +566,6 @@ export class AuthorizationSeeder {
 
             // Delete in correct order to respect foreign keys
             // Sử dụng .clear() thay vì .delete({})
-            await AppDataSource.getRepository(UserRole).clear();
-            console.log('🗑️  Removed all user-role associations');
 
             await AppDataSource.getRepository(RolePermission).clear();
             console.log('🗑️  Removed all role-permission associations');

@@ -9,6 +9,7 @@ extendZodWithOpenApi(z);
 export const CreateWorkspaceContentSchema = z.object({
     title: z.string().min(2).max(100),
     description: z.string().max(500).optional(),
+    visibility: z.enum(['private', 'public']).optional(),
 });
 
 // Dùng cho api docs workspaces
@@ -28,8 +29,7 @@ export const PostWorkspaceSchema = z.object({
 
 export const CreateWorkspaceMemberContentSchema = z.object({
     userId: z.uuid('User ID must be a valid UUID'),
-    workspaceId: z.uuid('Workspace ID must be a valid UUID'),
-    roleId: z.uuid('Role ID must be a valid UUID').optional(), // Optional để có thể dùng default role
+    roleId: z.uuid('Role ID must be a valid UUID'), // Optional để có thể dùng default role
 });
 
 // Dùng cho api docs workspaces

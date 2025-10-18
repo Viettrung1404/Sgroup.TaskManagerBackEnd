@@ -8,7 +8,6 @@ import { userService } from '@/api/user/userService';
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
 import AuthenticatedRequest from '@/common/declare/authenticationRequest.declare';
 import authenticateJWT from '@/common/middleware/authentication';
-import { requirePermissions } from '@/common/middleware/authorization';
 import {
     handleServiceResponse,
     validateRequest,
@@ -69,15 +68,10 @@ router.post(
 );
 
 // Route to get all users
-router.get(
-    '/',
-    authenticateJWT,
-    requirePermissions('users:read'),
-    async (req: Request, res: Response) => {
-        const serviceResponse = await userService.findAll();
-        handleServiceResponse(serviceResponse, res);
-    }
-);
+router.get('/', authenticateJWT, async (req: Request, res: Response) => {
+    const serviceResponse = await userService.findAll();
+    handleServiceResponse(serviceResponse, res);
+});
 
 // Route to get current user profile
 router.get('/me', authenticateJWT, async (req: Request, res: Response) => {

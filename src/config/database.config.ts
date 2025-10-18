@@ -15,7 +15,6 @@ import { RefreshToken } from '@/common/entities/refresh-token.entity';
 import { Role } from '@/common/entities/role.entity';
 import { RolePermission } from '@/common/entities/role-permission.entity';
 import { User } from '@/common/entities/user.entity';
-import { UserRole } from '@/common/entities/user-role.entity';
 import { Workspace } from '@/common/entities/workspace.entity';
 import { WorkspaceMembers } from '@/common/entities/workspace-member.entity';
 
@@ -42,7 +41,6 @@ export default new DataSource({
         Notification,
         RefreshToken,
         Role,
-        UserRole,
         RolePermission,
         Permission,
         BoardMembers,

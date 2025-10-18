@@ -3,11 +3,9 @@ import express, { Request, Response, Router } from 'express';
 import { z } from 'zod';
 
 import { createApiResponse } from '@/api-docs/openAPIResponseBuilders';
+import AuthenticatedRequest from '@/common/declare/authenticationRequest.declare';
 import authenticateJWT from '@/common/middleware/authentication';
-import {
-    requirePermissions,
-    requireRoles,
-} from '@/common/middleware/authorization';
+import { requireWorkspacePermissions } from '@/common/middleware/authorization';
 import {
     handleServiceResponse,
     validateRequest,
@@ -124,9 +122,12 @@ const registerPaths = () => {
 // Route to create a new workspace
 router.post(
     '/',
+    authenticateJWT,
     validateRequest(PostWorkspaceSchema),
     async (req: Request, res: Response) => {
         const workspaceData = req.body;
+        const authReq = req as AuthenticatedRequest;
+        workspaceData.adminId = authReq.user?.userId;
         console.log('🚀 ~ workspaceData:', workspaceData);
 
         const serviceResponse =
@@ -136,22 +137,21 @@ router.post(
 );
 
 // Route to get all workspaces
-router.get(
-    '/',
-    requireRoles('admin'),
-    authenticateJWT,
-    requirePermissions('workspaces:read'),
-    async (req: Request, res: Response) => {
-        const serviceResponse = await workspaceService.findAll();
-        handleServiceResponse(serviceResponse, res);
+router.get('/', authenticateJWT, async (req: Request, res: Response) => {
+    const authReq = req as AuthenticatedRequest;
+    const userId = authReq.user?.userId;
+    if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
     }
-);
+    const serviceResponse = await workspaceService.listWorkspaces(userId);
+    handleServiceResponse(serviceResponse, res);
+});
 
 // Route to get a workspace by id
 router.get(
     '/:id',
     authenticateJWT,
-    requirePermissions('workspaces:read'),
+    requireWorkspacePermissions('workspaces:read'),
     validateRequest(GetWorkspaceSchema),
     async (req: Request, res: Response) => {
         const id = req.params.id;
@@ -164,7 +164,7 @@ router.get(
 router.put(
     '/:id',
     authenticateJWT,
-    requirePermissions('workspaces:update'),
+    requireWorkspacePermissions('workspaces:update'),
     validateRequest(PatchWorkspaceSchema),
     async (req: Request, res: Response) => {
         const id = req.params.id;
@@ -181,7 +181,7 @@ router.put(
 router.delete(
     '/:id',
     authenticateJWT,
-    requirePermissions('workspaces:delete'),
+    requireWorkspacePermissions('workspaces:delete'),
     validateRequest(GetWorkspaceSchema),
     async (req: Request, res: Response) => {
         const id = req.params.id;
@@ -194,7 +194,7 @@ router.delete(
 router.get(
     '/:id/members',
     authenticateJWT,
-    requirePermissions('workspaces:read'),
+    requireWorkspacePermissions('workspaces:read'),
     validateRequest(GetWorkspaceSchema),
     async (req: Request, res: Response) => {
         const id = req.params.id;
@@ -207,7 +207,7 @@ router.get(
 router.post(
     '/:id/members',
     authenticateJWT,
-    requirePermissions('workspaces:update'),
+    requireWorkspacePermissions('workspaces:manage'),
     validateRequest(PostWorkspaceMemberSchema),
     async (req: Request, res: Response) => {
         const id = req.params.id;
@@ -224,7 +224,7 @@ router.post(
 router.put(
     '/:id/members',
     authenticateJWT,
-    requirePermissions('workspaces:update'),
+    requireWorkspacePermissions('workspaces:manage'),
     validateRequest(PatchMemberSchema),
     async (req: Request, res: Response) => {
         const { id, memberId } = req.params;
@@ -242,7 +242,7 @@ router.put(
 router.delete(
     '/:id/members/:memberId',
     authenticateJWT,
-    requirePermissions('workspaces:update'),
+    requireWorkspacePermissions('workspaces:manage'),
     validateRequest(GetMemberSchema),
     async (req: Request, res: Response) => {
         const id = req.params.id;

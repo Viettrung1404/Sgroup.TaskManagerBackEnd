@@ -5,9 +5,10 @@ import {
     ResponseStatus,
     ServiceResponse,
 } from '@/common/models/serviceResponse';
-import { generateJwt, sendEmail } from '@/common/utils';
+import { sendEmail } from '@/common/utils';
 import { logger } from '@/server';
 
+import { RoleRepository } from '../role/roleRepository';
 import { WorkspaceMemberRepository } from './workspaceMemberRepository';
 import {
     CreateWorkspaceMemberType,
@@ -87,8 +88,39 @@ class WorkspaceService {
         data: CreateWorkspaceType
     ): Promise<ServiceResponse<WorkspaceType | null>> {
         try {
+            // adminId không truyền vào hàm tạo
+            const adminId = data.adminId;
+            const { adminId: _, ...createData } = data;
+
+            // Tìm trong repository xem có tồn tại workspace với cùng adminId
+            const existingWorkspace =
+                await this.workspaceMemberRepository.findByAdminId(adminId);
+            if (existingWorkspace.length > 0) {
+                return new ServiceResponse(
+                    ResponseStatus.Failed,
+                    'Admin already has a workspace',
+                    null,
+                    StatusCodes.CONFLICT
+                );
+            }
             const newWorkspace =
-                await this.workspaceRepository.createWorkspace(data);
+                await this.workspaceRepository.createWorkspace(createData);
+            // Tạo admin member cho workspace mới tạo
+            const roleRepo = new RoleRepository();
+            const roleId = await roleRepo.findByName('workspace_admin');
+            if (!roleId) {
+                await this.workspaceRepository.deleteWorkspace(newWorkspace.id);
+                return new ServiceResponse(
+                    ResponseStatus.Failed,
+                    'Workspace admin role not found',
+                    null,
+                    StatusCodes.INTERNAL_SERVER_ERROR
+                );
+            }
+            await this.workspaceMemberRepository.addMember(newWorkspace.id, {
+                userId: adminId,
+                roleId: roleId?.id,
+            });
             return new ServiceResponse<WorkspaceType>(
                 ResponseStatus.Success,
                 'Workspace created successfully',
@@ -227,7 +259,7 @@ class WorkspaceService {
                     StatusCodes.BAD_REQUEST
                 );
             }
-            const inviteLink = `${process.env.FRONTEND_URL}/w/${generateJwt({ code: newMember.user.id })}`;
+            const inviteLink = `${process.env.FRONTEND_URL}/w/${workspaceId}`;
             sendEmail(MailTrigger.VerifyEmail, {
                 email: newMember.user.email,
                 inviteLink,

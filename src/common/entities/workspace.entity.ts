@@ -15,6 +15,9 @@ export class Workspace extends DateTimeEntity {
     @Column({ type: 'varchar', nullable: true })
     public description: string;
 
+    @Column({ type: 'enum', enum: ['private', 'public'], default: 'private' })
+    public visibility: 'private' | 'public';
+
     @OneToMany(
         () => WorkspaceMembers,
         (workspaceMember) => workspaceMember.user

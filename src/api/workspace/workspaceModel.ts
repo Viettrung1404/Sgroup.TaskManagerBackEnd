@@ -8,6 +8,7 @@ export const WorkspaceSchema = z.object({
     id: z.uuid(),
     title: z.string().max(255),
     description: z.string().optional(),
+    visibility: z.enum(['private', 'public']).optional(),
     createdAt: z.date(),
     updatedAt: z.date(),
 });
@@ -16,6 +17,8 @@ export const WorkspaceSchema = z.object({
 export const CreateWorkspaceSchema = z.object({
     title: z.string().max(255),
     description: z.string().optional(),
+    visibility: z.enum(['private', 'public']).optional(),
+    adminId: z.uuid(),
 });
 export type CreateWorkspaceType = z.infer<typeof CreateWorkspaceSchema>;
 
@@ -50,6 +53,7 @@ export const WorkspaceInMemberSchema = z.object({
     id: z.uuid(),
     title: z.string(),
     description: z.string().optional(),
+    visibility: z.enum(['private', 'public']).optional(),
 });
 
 // Workspace Member Schema (đầy đủ với relations)
